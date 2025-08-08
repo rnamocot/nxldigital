@@ -65,7 +65,7 @@ const navLinks = [
           <div className="hidden sm:block">
             <div className="flex items-center text-sm font-semibold text-gray-700 group-hover:text-[#002186] transition-colors">
               <Sparkles className="w-4 h-4 mr-1 text-[#FFD302]" />
-              Digital Growth
+              Digital
             </div>
           </div>
         </Link>
