@@ -34,7 +34,7 @@ async function testEmail() {
     }
 
     // Create transporter with your SMTP settings
-    const transporter = nodemailer.createTransport({
+    const transportConfig = {
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT),
       secure: process.env.SMTP_SECURE === 'true',
@@ -42,12 +42,27 @@ async function testEmail() {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
-    });
+      // Add these options for better debugging and connection handling
+      connectionTimeout: 10000, // 10 seconds
+      greetingTimeout: 5000, // 5 seconds
+      socketTimeout: 10000, // 10 seconds
+      debug: true,
+      logger: console
+    };
+
+    console.log('Transporter config:', JSON.stringify(transportConfig, null, 2));
+
+    const transporter = nodemailer.createTransport(transportConfig);
 
     console.log('Transporter created successfully');
 
-    // Test the connection
-    await transporter.verify();
+    // Test the connection with timeout
+    const verifyPromise = transporter.verify();
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Connection timeout after 15 seconds')), 15000)
+    );
+
+    await Promise.race([verifyPromise, timeoutPromise]);
     console.log('SMTP connection verified');
 
     // Prepare recipients list
