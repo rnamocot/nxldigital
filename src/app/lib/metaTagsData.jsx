@@ -1,3 +1,11 @@
+// Default social share image for all pages
+const defaultSocialImage = {
+  url: "https://www.nxldigital.com/social-share.jpg",
+  width: 1200,
+  height: 630,
+  alt: "NXL Digital - Digital Marketing Agency"
+};
+
 export const metaTagsData = {
   home: {
     title: "NXL Digital - Beyond Algorithms: Building Your Digital Ecosystem",
