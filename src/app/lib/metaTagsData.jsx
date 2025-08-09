@@ -17,6 +17,9 @@ export const metaTagsData = {
         }
       ]
     },
+    icons: {
+  icon: '/favicon.png', // ✅ top-level, not inside images
+},
     twitter: {
       card: "summary_large_image",
       title: "NXL Digital - Beyond Algorithms: Building Your Digital Ecosystem",
