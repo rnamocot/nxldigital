@@ -1,0 +1,75 @@
+import { NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
+
+export async function GET() {
+  return testEmail();
+}
+
+export async function POST() {
+  return testEmail();
+}
+
+async function testEmail() {
+  try {
+    console.log('Testing email configuration...');
+    console.log('SMTP_HOST:', process.env.SMTP_HOST);
+    console.log('SMTP_PORT:', process.env.SMTP_PORT);
+    console.log('SMTP_USER:', process.env.SMTP_USER);
+    console.log('SMTP_SECURE:', process.env.SMTP_SECURE);
+
+    // Create transporter with your SMTP settings
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    console.log('Transporter created successfully');
+
+    // Test the connection
+    await transporter.verify();
+    console.log('SMTP connection verified');
+
+    // Prepare recipients list
+    const recipients = process.env.CONTACT_EMAIL?.split(',').map(email => email.trim()) || [process.env.SMTP_FROM_EMAIL];
+    console.log('Test email recipients:', recipients);
+
+    // Send a test email
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM_EMAIL,
+      to: recipients,
+      subject: 'NXL Digital - Test Email Configuration',
+      text: 'This is a test email to verify the SMTP configuration is working.',
+      html: '<p>This is a test email to verify the SMTP configuration is working.</p>'
+    });
+
+    console.log('Test email sent successfully');
+
+    return NextResponse.json(
+      { message: 'Test email sent successfully' },
+      { status: 200 }
+    );
+
+  } catch (error) {
+    console.error('Email test error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      response: error.response
+    });
+    
+    return NextResponse.json(
+      { 
+        error: 'Email test failed', 
+        details: error.message,
+        code: error.code 
+      },
+      { status: 500 }
+    );
+  }
+}
