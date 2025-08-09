@@ -16,6 +16,22 @@ async function testEmail() {
     console.log('SMTP_PORT:', process.env.SMTP_PORT);
     console.log('SMTP_USER:', process.env.SMTP_USER);
     console.log('SMTP_SECURE:', process.env.SMTP_SECURE);
+    console.log('SMTP_FROM_EMAIL:', process.env.SMTP_FROM_EMAIL);
+    console.log('CONTACT_EMAIL:', process.env.CONTACT_EMAIL);
+
+    // Return configuration for debugging
+    if (!process.env.SMTP_HOST) {
+      return NextResponse.json({
+        error: 'Environment variables not loaded',
+        debug: {
+          SMTP_HOST: process.env.SMTP_HOST || 'MISSING',
+          SMTP_PORT: process.env.SMTP_PORT || 'MISSING',
+          SMTP_USER: process.env.SMTP_USER || 'MISSING',
+          SMTP_SECURE: process.env.SMTP_SECURE || 'MISSING',
+          NODE_ENV: process.env.NODE_ENV
+        }
+      }, { status: 500 });
+    }
 
     // Create transporter with your SMTP settings
     const transporter = nodemailer.createTransport({
